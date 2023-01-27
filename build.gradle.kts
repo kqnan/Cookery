@@ -17,6 +17,13 @@ taboolib {
     install("expansion-command-helper")
     install("expansion-player-database")
     install("expansion-persistent-container")
+    description {
+        dependencies{
+            name("ProtocolLib")
+            name("HolographicDisplays")
+
+        }
+    }
     classifier = null
     version = "6.0.10-73"
 }
@@ -40,6 +47,7 @@ dependencies {
     compileOnly("ink.ptms.core:v11902:11902-minimize:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
+    taboo("com.github.unldenis:Hologram-Lib:1.4.0")
 }
 
 tasks.withType<JavaCompile> {

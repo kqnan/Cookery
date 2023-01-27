@@ -1,0 +1,3 @@
+prefix: '&a[烹饪系统]'
+fuel_not_enough: "&f你至少需要1个可燃度进行烹饪"
+cooking: "&f正在做饭中....无法切换模式"
