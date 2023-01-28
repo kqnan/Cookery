@@ -5,6 +5,7 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.info
 import taboolib.module.chat.colored
+import taboolib.platform.util.isAir
 import taboolib.platform.util.onlinePlayers
 
 
@@ -22,8 +23,7 @@ fun infoOP(str:String){
     }
 }
 fun ItemStack.isGradient(gradient:ItemStack):Boolean{
-    debug(this.toString())
-    debug(gradient.toString())
+    if(this.type.isAir()||gradient.isAir)return false
     var r1=this.itemMeta.displayName==gradient.itemMeta.displayName
     var r2=this.type==gradient.type
     var r3=true

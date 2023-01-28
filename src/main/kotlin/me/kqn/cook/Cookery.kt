@@ -18,7 +18,10 @@ import taboolib.expansion.getDataContainer
 import taboolib.expansion.releaseDataContainer
 import taboolib.expansion.setupDataContainer
 import taboolib.expansion.setupPlayerDatabase
+import taboolib.module.ui.openMenu
+import taboolib.module.ui.type.Basic
 import taboolib.platform.BukkitPlugin
+import taboolib.platform.util.giveItem
 
 object Cookery : Plugin() {
     lateinit var holoDisplay:HoloGramDsiplay
@@ -45,6 +48,13 @@ object Cookery : Plugin() {
                         var player= Bukkit.getPlayerExact(argument)
                         sender.sendMessage("经验：${player.getDataContainer()["exp"]}")
                         sender.sendMessage("等级:${player.getDataContainer()["level"]}")
+                    }
+                }
+            }
+            literal("gradients"){
+                execute<Player>{sender, context, argument ->
+                    for (recipe in Recipes.rcp) {
+                        sender.giveItem(recipe.gradients)
                     }
                 }
             }

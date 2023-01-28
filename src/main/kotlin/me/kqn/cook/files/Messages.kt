@@ -18,6 +18,13 @@ object Messages {
     lateinit var fuel_not_enough:String
     @ConfigNode(value="cooking",bind="message.yml")
     lateinit var cooking:String
+    @ConfigNode(value = "level_not_enough", bind = "message.yml")
+    lateinit var level_not_enough:String
+    @ConfigNode(value = "failed", bind = "message.yml")
+    lateinit var failed:String
+    @ConfigNode(value = "success", bind = "message.yml")
+    lateinit var success:String
+
     fun  save(){
         submitAsync {
             message.saveToFile(File(path))

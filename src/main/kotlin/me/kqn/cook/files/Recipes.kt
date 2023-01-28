@@ -33,6 +33,7 @@ object Recipes {
     }
 
     fun read(){
+        rcp.clear()
         for (key in recipes.getKeys(false)) {
             Recipe.getRecipe(recipes.getConfigurationSection(key)?:continue)?.let { rcp.add(it) }
         }

@@ -3,35 +3,42 @@ package me.kqn.cook.cook
 
 import me.kqn.cook.Cookery
 import me.kqn.cook.files.Configs
+import me.kqn.cook.files.Messages
 import me.kqn.cook.files.Recipes
 import me.kqn.cook.isGradient
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submitAsync
+import taboolib.common.platform.service.PlatformExecutor
+import taboolib.common.util.random
 import taboolib.common.util.sync
 import taboolib.common5.Baffle
 import taboolib.expansion.getDataContainer
 import java.util.concurrent.TimeUnit
 
 
-data class Pot(val loc: Location,val player: Player){
+data class Pot(val loc: Location,val player: Player,val recipe:Recipes.Recipe){
     var mode:String?=null
     var state:State=State.WAITING
     var gradient:ArrayList<ItemStack>?=null
-
-    private val cookTime=1
-
+    private var isSuccess= random(1,100)<=recipe.chance
+    private val cookTime=recipe.time
+    private var task:PlatformExecutor.PlatformTask?=null
     enum class State{
         WAITING,
         COOKING
     }
     fun cook(){
+        if((player.getDataContainer()["level"]?.toIntOrNull()?:return)<recipe.require_level){
+            player.sendMessage("${Messages.prefix}${Messages.level_not_enough}")
+            return
+        }
         if((gradient?.size ?: return) > 0){
             state=State.COOKING
             CookPot.currentPots.put(loc.clone(),this)
             var remain=cookTime
-            submitAsync(period = 20){
+            task=submitAsync(period = 20){
                 if(remain<=0){
                     try {
                         finish()
@@ -46,6 +53,14 @@ data class Pot(val loc: Location,val player: Player){
         }
     }
     private fun reward(recipe:Recipes.Recipe){
+        if(!isSuccess){
+            player.sendMessage("${Messages.prefix}${Messages.failed}")
+            return
+        }
+        else {
+            player.sendMessage("${Messages.prefix}${Messages.success}")
+        }
+
         var exp=(player.getDataContainer()["exp"]?.toIntOrNull()?:0)+recipe.reward_exp
         player.getDataContainer()["exp"]=exp
         var newlevel=1
@@ -60,36 +75,11 @@ data class Pot(val loc: Location,val player: Player){
         sync { loc.world.dropItemNaturally(loc.clone().add(0.0,1.0,0.0),ritem) }
     }
     private fun finish(){
+        task?.cancel()
+        task=null
         sync { Cookery.holoDisplay.removeholo(loc.clone().add(0.5,2.0,0.5)) }
         var res=false
-        recipe@ for (recipe in Recipes.rcp) {
-
-            val cfg_group=recipe.gradients.groupBy {it.itemMeta.hashCode()}
-            var pot_group=this.gradient?.groupBy { it.itemMeta.hashCode() }?:return
-            for (entry in cfg_group) {
-               //判断这个物品是否在锅中
-                var res=false
-                var en:Map.Entry<Int,List<ItemStack>>?=null
-                for (entry2 in pot_group) {
-                    if(entry2.value[0].isGradient(entry.value[0])){
-                        res=true
-                        en=entry2
-                        break
-                    }
-                }
-                if(!res)continue@recipe
-                //判断锅中物品数量是否足够
-                en!!
-                var need=0
-                entry.value.forEach { need+=it.amount }
-                var pot_has=0
-                en.value.forEach { pot_has+=it.amount }
-                if(pot_has<need)continue@recipe
-            }
-            res=true
-            reward(recipe)
-            break@recipe
-        }
+        reward(this.recipe)
         state=State.WAITING
         gradient=null
 
