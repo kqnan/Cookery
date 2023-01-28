@@ -1,10 +1,12 @@
 package me.kqn.cook
 
 import me.kqn.cook.files.Configs
+import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.info
 import taboolib.module.chat.colored
 import taboolib.platform.util.onlinePlayers
+
 
 fun debug(str:String){
     if(Configs.config.getBoolean("debug")){
@@ -20,6 +22,8 @@ fun infoOP(str:String){
     }
 }
 fun ItemStack.isGradient(gradient:ItemStack):Boolean{
+    debug(this.toString())
+    debug(gradient.toString())
     var r1=this.itemMeta.displayName==gradient.itemMeta.displayName
     var r2=this.type==gradient.type
     var r3=true
@@ -29,4 +33,13 @@ fun ItemStack.isGradient(gradient:ItemStack):Boolean{
         }
     }
     return r1&&r2&&r3
+}
+
+fun ItemStack.isFood():Boolean{
+    return arrayListOf(Material.APPLE,Material.MUSHROOM_SOUP,Material.BREAD,Material.PORK,
+    Material.GOLDEN_APPLE,Material.RAW_FISH,Material.COOKED_FISH,Material.CAKE,Material.COOKIE
+    ,Material.MELON,Material.RAW_BEEF,Material.COOKED_BEEF,Material.COOKED_CHICKEN,Material.RAW_CHICKEN,
+    Material.ROTTEN_FLESH,Material.SPIDER_EYE,Material.CARROT,Material.POTATO,Material.BAKED_POTATO,
+    Material.POISONOUS_POTATO,Material.PUMPKIN_PIE,Material.RABBIT,Material.COOKED_RABBIT,
+    Material.RABBIT_STEW,Material.MUTTON,Material.COOKED_MUTTON,Material.BEETROOT,Material.BEETROOT_SOUP).contains(this.type)
 }

@@ -9,6 +9,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submitAsync
+import taboolib.common.util.sync
 import taboolib.common5.Baffle
 import taboolib.expansion.getDataContainer
 import java.util.concurrent.TimeUnit
@@ -19,7 +20,7 @@ data class Pot(val loc: Location,val player: Player){
     var state:State=State.WAITING
     var gradient:ArrayList<ItemStack>?=null
 
-    private val cookTime=30
+    private val cookTime=1
 
     enum class State{
         WAITING,
@@ -32,22 +33,34 @@ data class Pot(val loc: Location,val player: Player){
             var remain=cookTime
             submitAsync(period = 20){
                 if(remain<=0){
-                    finish()
+                    try {
+                        finish()
+                    } catch (e: Exception) {
+                    }
                     this.cancel()
                     return@submitAsync
                 }
                 remain--
-                Cookery.holoDisplay.addholo(loc.clone().add(0.0,1.0,0.0), listOf("&a正在烹饪中，剩余时间:${remain}秒"))
+                sync { Cookery.holoDisplay.addholo(loc.clone().add(0.5,2.0,0.5), listOf("&a正在烹饪中","&a剩余时间:${remain}秒")) }
             }
         }
     }
     private fun reward(recipe:Recipes.Recipe){
         var exp=(player.getDataContainer()["exp"]?.toIntOrNull()?:0)+recipe.reward_exp
-       Configs.config.getIntegerList("upgrade_require_exp").forEachIndexed { index, i ->
-
-       }
+        player.getDataContainer()["exp"]=exp
+        var newlevel=1
+        for (i in Configs.config.getIntegerList("upgrade_require_exp")) {
+            if(exp>=i){
+                newlevel++
+            }
+            else break
+        }
+        player.getDataContainer()["level"]=newlevel
+        var ritem=RewardItem.getRewardItem(recipe.reward_item?:return,recipe.reward_buff?:return,recipe.reward_buff_trigg_all?:return)
+        sync { loc.world.dropItemNaturally(loc.clone().add(0.0,1.0,0.0),ritem) }
     }
     private fun finish(){
+        sync { Cookery.holoDisplay.removeholo(loc.clone().add(0.5,2.0,0.5)) }
         var res=false
         recipe@ for (recipe in Recipes.rcp) {
 

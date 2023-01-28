@@ -14,7 +14,7 @@ import java.io.File
 
 object Recipes {
     private val path="plugins/Cookery/recipes.yml"
-    private lateinit var recipes :Configuration
+    private  var recipes :Configuration=Configuration.loadFromFile(File(path))
     val rcp=ArrayList<Recipe>()
 
     init {
@@ -25,10 +25,12 @@ object Recipes {
                 infoOP("自动重载已完成")
             }
         }
+
     }
 
-
-
+    override fun toString(): String {
+        return rcp.toString()
+    }
 
     fun read(){
         for (key in recipes.getKeys(false)) {

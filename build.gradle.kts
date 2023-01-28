@@ -35,7 +35,7 @@ repositories {
     maven ( "https://maven.aliyun.com/repository/google")
     maven ( "https://maven.aliyun.com/repository/public" )
     maven(  "https://maven.aliyun.com/repository/gradle-plugin" )
-
+    maven("https://repo.codemc.io/repository/maven-public/")
 
 
     mavenCentral()
@@ -48,6 +48,7 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     taboo("com.github.unldenis:Hologram-Lib:1.4.0")
+    taboo("de.tr7zw:item-nbt-api:2.10.0")
 }
 
 tasks.withType<JavaCompile> {

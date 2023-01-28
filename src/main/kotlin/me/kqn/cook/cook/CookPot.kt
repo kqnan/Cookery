@@ -1,5 +1,6 @@
 package me.kqn.cook.cook
 
+import me.kqn.cook.debug
 import me.kqn.cook.files.Configs
 import me.kqn.cook.files.Messages
 import me.kqn.cook.files.Recipes
@@ -30,7 +31,7 @@ object CookPot {
         if(e.isRightClickBlock()){
             if(e.clickedBlock.type== Material.CAULDRON){
                 if(!currentPots.containsKey(e.clickedBlock.location)|| currentPots.get(e.clickedBlock.location)!!.state==Pot.State.WAITING){
-                    e.player.openMenu<Basic>(title = "&a烹饪模式"){
+                    e.player.openMenu<Basic>(title = "&a烹饪模式".colored()){
                         var loc=e.clickedBlock.location.clone()
                         rows(2)
                         var idx=2
@@ -54,7 +55,11 @@ object CookPot {
         }
     }
     private fun getGradients(loc:Location):ArrayList<ItemStack>{
-        var items=loc.world.getNearbyEntities(loc.clone().add(0.0,1.0,0.0),0.5,0.5,0.5).filter {
+        debug(loc.toString())
+        var items=loc.world.getNearbyEntities(loc.clone(),1.0,1.0,1.0).filter {
+            debug(it.type.toString()+"  "+(it.type==EntityType.DROPPED_ITEM).toString())
+            debug(isRecipeItem((it as org.bukkit.entity.Item).itemStack).toString())
+
             if(it.type==EntityType.DROPPED_ITEM&& isRecipeItem((it as org.bukkit.entity.Item).itemStack)){
                 it.remove()
                 return@filter  true
@@ -64,9 +69,11 @@ object CookPot {
         }
         var res=ArrayList<ItemStack>()
         items.forEach { res.add(it) }
+        debug(res.toString())
         return  res
     }
    private fun isRecipeItem(item:ItemStack):Boolean{
+       debug(Recipes.rcp.toString())
        for (recipe in Recipes.rcp) {
            for (gradient in recipe.gradients) {
                if(item.isGradient(gradient)){
