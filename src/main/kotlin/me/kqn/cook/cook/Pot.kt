@@ -15,10 +15,12 @@ import taboolib.common.util.random
 import taboolib.common.util.sync
 import taboolib.common5.Baffle
 import taboolib.expansion.getDataContainer
+import taboolib.module.chat.colored
 import java.util.concurrent.TimeUnit
 
 
 data class Pot(val loc: Location,val player: Player,val recipe:Recipes.Recipe){
+
     var mode:String?=null
     var state:State=State.WAITING
     var gradient:ArrayList<ItemStack>?=null
@@ -30,10 +32,7 @@ data class Pot(val loc: Location,val player: Player,val recipe:Recipes.Recipe){
         COOKING
     }
     fun cook(){
-        if((player.getDataContainer()["level"]?.toIntOrNull()?:return)<recipe.require_level){
-            player.sendMessage("${Messages.prefix}${Messages.level_not_enough}")
-            return
-        }
+
         if((gradient?.size ?: return) > 0){
             state=State.COOKING
             CookPot.currentPots.put(loc.clone(),this)
@@ -54,11 +53,11 @@ data class Pot(val loc: Location,val player: Player,val recipe:Recipes.Recipe){
     }
     private fun reward(recipe:Recipes.Recipe){
         if(!isSuccess){
-            player.sendMessage("${Messages.prefix}${Messages.failed}")
+            player.sendMessage("${Messages.prefix}${Messages.failed}".colored())
             return
         }
         else {
-            player.sendMessage("${Messages.prefix}${Messages.success}")
+            player.sendMessage("${Messages.prefix}${Messages.success}".colored())
         }
 
         var exp=(player.getDataContainer()["exp"]?.toIntOrNull()?:0)+recipe.reward_exp

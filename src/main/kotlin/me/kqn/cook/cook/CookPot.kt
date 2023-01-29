@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.adaptLocation
 import taboolib.common.util.asList
+import taboolib.expansion.getDataContainer
 import taboolib.module.chat.colored
 
 
@@ -41,11 +42,13 @@ object CookPot {
                             set(idx++,ItemBuilder(Material.WOOL).also { it.name=mode.second.colored() }.build()){
                                 this.clicker.closeInventory()
                                 //获取锅中物品实体
-                                var items=loc.world.getNearbyEntities(loc.clone(),1.0,1.0,1.0).filter { return@filter it.type==EntityType.DROPPED_ITEM } as List<org.bukkit.entity.Item>
+                                val items=loc.world.getNearbyEntities(loc.clone(),1.0,1.0,1.0).filter { return@filter it.type==EntityType.DROPPED_ITEM } as List<org.bukkit.entity.Item>
                                 //看看这一堆实体中，匹配了哪个配方
+                                val playerlevel=this.clicker.getDataContainer()["level"]?.toIntOrNull()?:1
+
                                 var recipe:Recipes.Recipe?=null
                                 for (rcp in Recipes.rcp) {
-                                    if(matchRecipe(mode.first,items.map { it.itemStack },rcp)){
+                                    if(matchRecipe(mode.first,items.map { it.itemStack },rcp)&&playerlevel>=rcp.require_level){
                                         recipe=rcp
                                         break
                                     }
