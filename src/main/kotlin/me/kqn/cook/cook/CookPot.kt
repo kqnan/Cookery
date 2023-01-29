@@ -2,6 +2,7 @@ package me.kqn.cook.cook
 
 import me.kqn.cook.debug
 import me.kqn.cook.files.Configs
+import me.kqn.cook.files.Configs.isPotFuel
 import me.kqn.cook.files.Messages
 import me.kqn.cook.files.Recipes
 import me.kqn.cook.isGradient
@@ -10,9 +11,12 @@ import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
+import taboolib.common.LifeCycle
+import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.adaptLocation
 import taboolib.common.util.asList
+import taboolib.common5.Baffle
 import taboolib.expansion.getDataContainer
 import taboolib.module.chat.colored
 
@@ -24,13 +28,33 @@ import taboolib.platform.util.ItemBuilder
 import taboolib.platform.util.isNotAir
 import taboolib.platform.util.isRightClickBlock
 import java.util.Collections
+import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 
 object CookPot {
     val currentPots=HashMap<Location,Pot>()
+    private val baffle=Baffle.of(500,TimeUnit.MILLISECONDS)
+    @Awake(LifeCycle.DISABLE)
+    fun disable(){
+        baffle.resetAll()
+    }
     @SubscribeEvent
-    fun clickPot(e:PlayerInteractEvent){
-        if(e.isRightClickBlock()){
+    fun addFuel(e:PlayerInteractEvent){
+        if(baffle.hasNext()) baffle.next()
+        if(e.isRightClickBlock()&&e.clickedBlock.type==Material.CAULDRON
+            &&e.player.inventory.itemInMainHand.type.isPotFuel()
+        ){
+            var fuelMaterial=e.player.inventory.itemInMainHand
+            var pot=currentPots[e.clickedBlock.location]?: Pot(e.clickedBlock.location)
+            pot.addFuel(Configs.getFuel(fuelMaterial.type))
+            currentPots[e.clickedBlock.location]=pot
+            e.player.inventory.itemInMainHand.amount-=1
+            e.player.sendMessage("${Messages.prefix}${Messages.fuel_added}".colored())
+        }
+    }
+    @SubscribeEvent
+    fun openPot(e:PlayerInteractEvent){
+        if(e.isRightClickBlock()&&!e.player.inventory.itemInMainHand.type.isPotFuel()){
             if(e.clickedBlock.type== Material.CAULDRON){
                 if(!currentPots.containsKey(e.clickedBlock.location)|| currentPots.get(e.clickedBlock.location)!!.state==Pot.State.WAITING){
                     e.player.openMenu<Basic>(title = "&a烹饪模式".colored()){
@@ -38,9 +62,21 @@ object CookPot {
                         rows(2)
                         var idx=2
 
+                        //如果表中没记录则记录否则引用表中的对象
+                        var pot=Pot(loc)
+                        if(currentPots.containsKey(loc)){
+                            currentPots[loc]?.let { pot=it  }
+                        }else {
+                            currentPots.put(loc,pot)
+                        }
+                        set(13,ItemBuilder(Material.COAL).also { it.name="&a燃料值：&f${pot.getFuel()}".colored() }.build()){isCancelled=true}
                         for (mode in Configs.getModes()) {
                             set(idx++,ItemBuilder(Material.WOOL).also { it.name=mode.second.colored() }.build()){
                                 this.clicker.closeInventory()
+                                //检查燃料是否足够
+                                if ((pot.getFuel())<1.0){
+                                    this.clicker.sendMessage("${Messages.prefix}${Messages.fuel_not_enough}".colored())
+                                    return@set}
                                 //获取锅中物品实体
                                 val items=loc.world.getNearbyEntities(loc.clone(),1.0,1.0,1.0).filter { return@filter it.type==EntityType.DROPPED_ITEM } as List<org.bukkit.entity.Item>
                                 //看看这一堆实体中，匹配了哪个配方
@@ -90,12 +126,9 @@ object CookPot {
                                         loc.world.dropItem(loc,remainitem.value[0])
                                     }
                                 }
-
-
-                                var pot=Pot(loc,this.clicker,recipe)
                                 pot.gradient=recipe.gradients
                                 pot.mode=mode.first
-                                pot.cook()
+                                pot.cook(this.clicker,recipe)
                             }
                         }
                     }

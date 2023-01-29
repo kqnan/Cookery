@@ -1,5 +1,6 @@
 prefix: '&a[烹饪系统]'
 fuel_not_enough: "&f你至少需要1个可燃度进行烹饪"
+fuel_added: "&c已放入燃料"
 cooking: "&f正在做饭中....无法切换模式"
 level_not_enough: "&f等级不够，无法烹饪"
 failed: "&c烹饪失败，请提高厨艺再尝试"

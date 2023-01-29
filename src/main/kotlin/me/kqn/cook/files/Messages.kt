@@ -14,6 +14,8 @@ object Messages {
 
     @ConfigNode(value="prefix",bind="message.yml")
     lateinit var prefix:String
+    @ConfigNode(value = "fuel_added", bind = "message.yml")
+    lateinit var fuel_added:String
     @ConfigNode(value="fuel_not_enough",bind="message.yml")
     lateinit var fuel_not_enough:String
     @ConfigNode(value="cooking",bind="message.yml")

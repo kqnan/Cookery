@@ -19,24 +19,36 @@ import taboolib.module.chat.colored
 import java.util.concurrent.TimeUnit
 
 
-data class Pot(val loc: Location,val player: Player,val recipe:Recipes.Recipe){
-
+data class Pot(val loc: Location){
+    private lateinit var player:Player
+    private lateinit var recipe: Recipes.Recipe
+    private var fuel:Double=0.0
     var mode:String?=null
     var state:State=State.WAITING
     var gradient:ArrayList<ItemStack>?=null
-    private var isSuccess= random(1,100)<=recipe.chance
-    private val cookTime=recipe.time
+    private var isSuccess= false
+    private var cookTime:Int=1
     private var task:PlatformExecutor.PlatformTask?=null
     enum class State{
         WAITING,
         COOKING
     }
-    fun cook(){
-
+    fun getFuel():Double{
+        return fuel
+    }
+    fun addFuel(value:Double){
+        fuel+=value
+    }
+    fun cook( player: Player,recipe:Recipes.Recipe){
+        this.player=player
+        this.recipe=recipe
+        this.isSuccess= random(1,100)<=recipe.chance
+        this.cookTime=recipe.time
         if((gradient?.size ?: return) > 0){
             state=State.COOKING
-            CookPot.currentPots.put(loc.clone(),this)
+        //    CookPot.currentPots.put(loc.clone(),this)
             var remain=cookTime
+            fuel-=1.0
             task=submitAsync(period = 20){
                 if(remain<=0){
                     try {
