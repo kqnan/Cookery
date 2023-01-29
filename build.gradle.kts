@@ -21,7 +21,8 @@ taboolib {
         dependencies{
             name("ProtocolLib")
             name("HolographicDisplays")
-
+            name("Residence")
+            name("WorldGuard")
         }
     }
     classifier = null

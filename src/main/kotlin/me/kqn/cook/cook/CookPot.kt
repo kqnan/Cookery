@@ -1,5 +1,6 @@
 package me.kqn.cook.cook
 
+import me.kqn.cook.Cookery
 import me.kqn.cook.debug
 import me.kqn.cook.files.Configs
 import me.kqn.cook.files.Configs.isPotFuel
@@ -40,6 +41,7 @@ object CookPot {
     }
     @SubscribeEvent
     fun addFuel(e:PlayerInteractEvent){
+        if(!Cookery.allowAddFuel(e.clickedBlock.location,e.player))return
         if(baffle.hasNext()) baffle.next()
         if(e.isRightClickBlock()&&e.clickedBlock.type==Material.CAULDRON
             &&e.player.inventory.itemInMainHand.type.isPotFuel()
@@ -54,6 +56,7 @@ object CookPot {
     }
     @SubscribeEvent
     fun openPot(e:PlayerInteractEvent){
+        if(!Cookery.allowOpen(e.clickedBlock.location,e.player))return
         if(e.isRightClickBlock()&&!e.player.inventory.itemInMainHand.type.isPotFuel()){
             if(e.clickedBlock.type== Material.CAULDRON){
                 if(!currentPots.containsKey(e.clickedBlock.location)|| currentPots.get(e.clickedBlock.location)!!.state==Pot.State.WAITING){

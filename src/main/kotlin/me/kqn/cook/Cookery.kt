@@ -4,7 +4,11 @@ import me.kqn.cook.files.Recipes
 import me.kqn.cook.holo.HoloDisplay
 import me.kqn.cook.holo.HoloGramDsiplay
 import me.kqn.cook.holo.HolographDisplay
+import me.kqn.cook.integrate.Protection
+import me.kqn.cook.integrate.Residence
+import me.kqn.cook.integrate.WorldGuard
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
@@ -23,14 +27,27 @@ import taboolib.module.ui.type.Basic
 import taboolib.platform.BukkitPlugin
 import taboolib.platform.util.giveItem
 
-object Cookery : Plugin() {
+object Cookery : Plugin(),Protection {
     lateinit var holoDisplay:HoloGramDsiplay
+    private var protections=ArrayList<Protection>()
+    override fun onLoad() {
+
+    }
     override fun onEnable() {
         Recipes.read()
         setupPlayerDatabase(newFile(getDataFolder(), "data.db"))
         holoDisplay= HolographDisplay(BukkitPlugin.getInstance())
         regcmd()
+        integration()
+    }
 
+    private fun integration(){
+        if (Bukkit.getPluginManager().isPluginEnabled("Residence")){
+            protections.add(Residence())
+        }
+        if(Bukkit.getPluginManager().isPluginEnabled("WorldGuard")){
+            protections.add(WorldGuard)
+        }
     }
 
     fun regcmd(){
@@ -71,6 +88,18 @@ object Cookery : Plugin() {
     fun releaseDAta(e: PlayerQuitEvent) {
         // ÊÍ·ÅÍæ¼ÒÈÝÆ÷»º´æ
         e.player.releaseDataContainer()
+    }
+
+    override fun allowOpen(loc: Location, player: Player): Boolean {
+        if(player.isOp)return true
+       this.protections.forEach { if(!it.allowOpen(loc,player))return  false }
+        return  true
+    }
+
+    override fun allowAddFuel(loc: Location, player: Player): Boolean {
+        if(player.isOp)return true
+        this.protections.forEach { if(!it.allowAddFuel(loc,player)) return false }
+        return true
     }
 
 }
