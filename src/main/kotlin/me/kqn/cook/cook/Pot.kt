@@ -101,6 +101,7 @@ data class Pot(val loc: Location){
             else break
         }
         player.getDataContainer()["level"]=newlevel
+        updateUnlockRecipe()
         var ritem=RewardItem.getRewardItem(recipe.reward_item?:return,recipe.reward_buff?:return,recipe.reward_buff_trigg_all?:return)
         sync { loc.world.dropItemNaturally(loc.clone().add(0.0,1.0,0.0),ritem) }
     }
@@ -114,6 +115,17 @@ data class Pot(val loc: Location){
         state=State.WAITING
         gradient=null
 
+    }
+    private fun updateUnlockRecipe(){
+        val res=LinkedHashSet<String>()
+        player.getDataContainer()["unlock"]?.let { res.addAll(it.split(":")) }
+        this.recipe?.let { res.add(it.key) }
+        val builder=StringBuilder()
+        res.forEachIndexed { index, s ->
+            builder.append(s)
+            if(index<res.size-1)builder.append(":")
+        }
+        player.getDataContainer()["unlock"]=builder.toString()
     }
 
 }

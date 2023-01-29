@@ -7,6 +7,7 @@ import me.kqn.cook.holo.HolographDisplay
 import me.kqn.cook.integrate.Protection
 import me.kqn.cook.integrate.Residence
 import me.kqn.cook.integrate.WorldGuard
+import me.kqn.cook.menu.RecipeMenu
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.command.CommandSender
@@ -73,6 +74,12 @@ object Cookery : Plugin(),Protection {
                     for (recipe in Recipes.rcp) {
                         sender.giveItem(recipe.gradients)
                     }
+                }
+            }
+            literal("menu"){
+                execute<Player>{
+                    sender, context, argument ->
+                    RecipeMenu.open(sender)
                 }
             }
         }

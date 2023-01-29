@@ -18,6 +18,7 @@ object Configs {
     private val path="plugins/Cookery/config.yml"
     private val fuel =HashMap<Material,Double>()
     private var unknowItemStack:ItemStack?=null
+    private val unlockList=ArrayList<String>()
     init {
         read()
         FileWatcher.INSTANCE.addSimpleListener(File(path)){
@@ -36,6 +37,8 @@ object Configs {
             var v=s.split(":")[1].toDoubleOrNull()?:continue
             fuel.put(m,v)
         }
+        unlockList.clear()
+        unlockList.addAll(config.getStringList("level_unlock"))
         unknowItemStack=RewardItem.getRewardItem(config.getItemStack("unknown")?:return, config.getStringList("unknown.debuff"),true)
     }
     fun  save(){
@@ -43,7 +46,20 @@ object Configs {
             config.saveToFile(File(path))
         }
     }
+    fun getUnlockList(level:Int):LinkedHashSet<String>{
+        var res=LinkedHashSet<String>()
+        for (s in unlockList) {
+            val need=s.split(":")[0].toIntOrNull()?:continue
+            if(level>=need){
+                val tmp=s.split(":")
+                for(i in 1 until tmp.size){
+                    res.add(tmp[i])
+                }
 
+            }
+        }
+        return res
+    }
     fun getFuel(material: Material):Double{
         return fuel.getOrDefault(material,0.0)
     }

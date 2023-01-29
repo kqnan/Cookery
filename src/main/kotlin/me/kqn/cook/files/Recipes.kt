@@ -36,7 +36,7 @@ object Recipes {
         rcp.clear()
         rci.clear()
         for (key in recipes.getKeys(false)) {
-            Recipe.getRecipe(recipes.getConfigurationSection(key)?:continue)?.let { rcp.add(it) }
+            Recipe.getRecipe(recipes.getConfigurationSection(key)?:continue,key)?.let { rcp.add(it) }
         }
         for (recipe in rcp) {
             rci.addAll(recipe.gradients)
@@ -55,7 +55,7 @@ object Recipes {
         }
     }
     class  Recipe{
-
+        var key:String=""
         val gradients=ArrayList<ItemStack>()
         var time:Int =30
         var chance:Int=60
@@ -67,8 +67,9 @@ object Recipes {
         var reward_buff:List<String>?=null
         private constructor()
         companion object{
-            fun getRecipe(cfg:taboolib.library.configuration.ConfigurationSection):Recipe?{
+            fun getRecipe(cfg:taboolib.library.configuration.ConfigurationSection,key:String):Recipe?{
                 var recipe=Recipe()
+                recipe.key=key
                 cfg.getConfigurationSection("gradients")?.getKeys(false)?.forEach {
                     cfg.getItemStack("gradients.${it}")?.let { it1 -> recipe.gradients.add(it1) }
                 }?:return null
