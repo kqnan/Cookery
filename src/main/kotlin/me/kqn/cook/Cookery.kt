@@ -64,8 +64,8 @@ object Cookery : Plugin(),Protection {
                 dynamic {
                     execute<CommandSender>{sender, context, argument ->
                         var player= Bukkit.getPlayerExact(argument)
-                        sender.sendMessage("经验：${player.getDataContainer()["exp"]}")
-                        sender.sendMessage("等级:${player.getDataContainer()["level"]}")
+                        sender.sendMessage("经验：${player?.getDataContainer()?.get("exp") ?:0}")
+                        sender.sendMessage("等级:${player?.getDataContainer()?.get("level") ?:0}")
                     }
                 }
             }

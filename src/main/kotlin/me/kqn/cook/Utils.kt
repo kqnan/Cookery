@@ -24,10 +24,12 @@ fun infoOP(str:String){
 }
 fun ItemStack.isGradient(gradient:ItemStack):Boolean{
     if(this.type.isAir()||gradient.isAir)return false
-    var r1=this.itemMeta.displayName==gradient.itemMeta.displayName
+    var r1=this.itemMeta?.displayName==gradient.itemMeta?.displayName
     var r2=this.type==gradient.type
     var r3=true
-    for (s in gradient.itemMeta.lore) {
+    for (s in gradient.itemMeta?.lore?:return false) {
+        this.itemMeta!!
+        this.itemMeta.lore!!
         if(!this.itemMeta.lore.contains(s)){
             r3=false
         }
