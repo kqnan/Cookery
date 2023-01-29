@@ -45,7 +45,17 @@ data class Pot(val loc: Location){
     fun cook( player: Player,recipe:Recipes.Recipe?){
         this.player=player
         this.recipe=recipe
-        this.isSuccess= random(1, 100) <= (recipe?.chance ?: 100)
+        var level=player.getDataContainer()["level"]?.toIntOrNull()?:1
+        var chance=(recipe?.chance ?: 100)
+        //当食谱需要的等级低于当前等级，则触发额外成功率
+        if(recipe!=null&&(recipe.require_level)<level){
+            chance+=Configs.config.getIntegerList("upgrade_success_chance").getOrElse(level-2){0}
+        }
+        //如果等级未达到当前食谱需要的等级则必定失败
+        else if(recipe!=null&&recipe.require_level>level){
+            chance=0
+        }
+        this.isSuccess= random(1, 100) <= chance
         this.cookTime=recipe?.time?:30
 
             state=State.COOKING
@@ -63,7 +73,7 @@ data class Pot(val loc: Location){
                 }
                 remain--
                 loc.world.spawnParticle(Particle.SMOKE_LARGE,loc.clone().add(0.5,2.0,0.5),2,0.0,0.0,0.0,0.0)
-                sync { Cookery.holoDisplay.addholo(loc.clone().add(0.5,2.0,0.5), listOf("${modeDisplay}","&a正在烹饪中","&a剩余时间:${remain}秒")) }
+                sync { Cookery.holoDisplay.addholo(loc.clone().add(0.5,2.0,0.5), listOf("${modeDisplay}","&a正在烹饪中","&a剩余时间:${remain}秒","&7成功率：${chance}")) }
             }
 
     }
