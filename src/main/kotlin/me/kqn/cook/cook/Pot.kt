@@ -7,6 +7,7 @@ import me.kqn.cook.files.Messages
 import me.kqn.cook.files.Recipes
 import me.kqn.cook.isGradient
 import org.bukkit.Location
+import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submitAsync
@@ -15,15 +16,17 @@ import taboolib.common.util.random
 import taboolib.common.util.sync
 import taboolib.common5.Baffle
 import taboolib.expansion.getDataContainer
+import taboolib.library.xseries.getItemStack
 import taboolib.module.chat.colored
 import java.util.concurrent.TimeUnit
 
 
 data class Pot(val loc: Location){
     private lateinit var player:Player
-    private lateinit var recipe: Recipes.Recipe
+    private var recipe: Recipes.Recipe?=null
     private var fuel:Double=0.0
     var mode:String?=null
+    var modeDisplay:String?=null
     var state:State=State.WAITING
     var gradient:ArrayList<ItemStack>?=null
     private var isSuccess= false
@@ -39,12 +42,12 @@ data class Pot(val loc: Location){
     fun addFuel(value:Double){
         fuel+=value
     }
-    fun cook( player: Player,recipe:Recipes.Recipe){
+    fun cook( player: Player,recipe:Recipes.Recipe?){
         this.player=player
         this.recipe=recipe
-        this.isSuccess= random(1,100)<=recipe.chance
-        this.cookTime=recipe.time
-        if((gradient?.size ?: return) > 0){
+        this.isSuccess= random(1, 100) <= (recipe?.chance ?: 100)
+        this.cookTime=recipe?.time?:30
+
             state=State.COOKING
         //    CookPot.currentPots.put(loc.clone(),this)
             var remain=cookTime
@@ -59,11 +62,17 @@ data class Pot(val loc: Location){
                     return@submitAsync
                 }
                 remain--
-                sync { Cookery.holoDisplay.addholo(loc.clone().add(0.5,2.0,0.5), listOf("&a正在烹饪中","&a剩余时间:${remain}秒")) }
+                loc.world.spawnParticle(Particle.SMOKE_LARGE,loc.clone().add(0.5,2.0,0.5),2,0.0,0.0,0.0,0.0)
+                sync { Cookery.holoDisplay.addholo(loc.clone().add(0.5,2.0,0.5), listOf("${modeDisplay}","&a正在烹饪中","&a剩余时间:${remain}秒")) }
             }
-        }
+
     }
-    private fun reward(recipe:Recipes.Recipe){
+    private fun reward(recipe:Recipes.Recipe?){
+        if(recipe==null){
+            sync { loc.world.dropItemNaturally(loc.clone().add(0.0,1.0,0.0),Configs.getUnkonwItem()?:return@sync) }
+            return
+        }
+        recipe!!
         if(!isSuccess){
             player.sendMessage("${Messages.prefix}${Messages.failed}".colored())
             return
@@ -90,6 +99,7 @@ data class Pot(val loc: Location){
         task=null
         sync { Cookery.holoDisplay.removeholo(loc.clone().add(0.5,2.0,0.5)) }
         var res=false
+
         reward(this.recipe)
         state=State.WAITING
         gradient=null

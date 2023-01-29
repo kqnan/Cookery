@@ -16,7 +16,7 @@ object Recipes {
     private val path="plugins/Cookery/recipes.yml"
     private  var recipes :Configuration=Configuration.loadFromFile(File(path))
     val rcp=ArrayList<Recipe>()
-
+    private val rci=ArrayList<ItemStack>()
     init {
         FileWatcher.INSTANCE.addSimpleListener(File(path)){
             submitAsync {
@@ -34,12 +34,21 @@ object Recipes {
 
     fun read(){
         rcp.clear()
+        rci.clear()
         for (key in recipes.getKeys(false)) {
             Recipe.getRecipe(recipes.getConfigurationSection(key)?:continue)?.let { rcp.add(it) }
         }
+        for (recipe in rcp) {
+            rci.addAll(recipe.gradients)
+        }
+
     }
-
-
+    fun getGradientsItem():ArrayList<ItemStack>{
+        return rci
+    }
+    fun isGradient(itemStack: ItemStack):Boolean{
+        return rci.map { it.itemMeta }.contains(itemStack.itemMeta ?:return false)
+    }
     fun  save(){
         submitAsync {
             recipes.saveToFile(File(path))

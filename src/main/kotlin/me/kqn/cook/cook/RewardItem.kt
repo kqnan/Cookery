@@ -19,18 +19,20 @@ import taboolib.common.util.sync
 object RewardItem {
     @SubscribeEvent
     fun eat(e:PlayerItemConsumeEvent){
-        parseItem(e.item?:return,e.player)
+        parseItem(e.item?:return,e.player,true)
     }
     @SubscribeEvent
     fun rightclick(e:PlayerInteractEvent){
         if(e.item==null)return
-        if(!e.item.isFood())parseItem(e.item?:return,e.player)
+        if(!e.item.isFood())parseItem(e.item?:return,e.player,false)
     }
 
-    fun parseItem(itemStack: ItemStack,player: Player){
-        var nbtItem=NBTItem(itemStack)
+    fun parseItem(itemStack: ItemStack,player: Player,eat:Boolean){
+        var nbtItem=NBTItem(itemStack.clone())
         if(!nbtItem.hasKey("cookery_buff")||!nbtItem.hasKey("cookery_triggerAll"))return
+        if(!eat)player.inventory.itemInMainHand.amount-=1
         submitAsync {
+
             var buff=nbtItem.getStringList("cookery_buff")
             var triggAll=nbtItem.getBoolean("cookery_triggerAll")
             for (bf in buff) {

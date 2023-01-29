@@ -1,9 +1,11 @@
 package me.kqn.cook.files
 
+import me.kqn.cook.cook.RewardItem
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submitAsync
 import taboolib.common5.FileWatcher
+import taboolib.library.xseries.getItemStack
 import taboolib.module.chat.colored
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
@@ -15,6 +17,7 @@ object Configs {
     lateinit var config: Configuration
     private val path="plugins/Cookery/config.yml"
     private val fuel =HashMap<Material,Double>()
+    private var unknowItemStack:ItemStack?=null
     init {
         read()
         FileWatcher.INSTANCE.addSimpleListener(File(path)){
@@ -33,6 +36,7 @@ object Configs {
             var v=s.split(":")[1].toDoubleOrNull()?:continue
             fuel.put(m,v)
         }
+        unknowItemStack=RewardItem.getRewardItem(config.getItemStack("unknown")?:return, config.getStringList("unknown.debuff"),true)
     }
     fun  save(){
         submitAsync {
@@ -45,6 +49,9 @@ object Configs {
     }
     fun Material.isPotFuel():Boolean{
         return fuel.keys.contains(this)
+    }
+    fun getUnkonwItem():ItemStack?{
+        return unknowItemStack?.clone()
     }
     fun getModes():List<Pair<String,String>>{
         var res=ArrayList<Pair<String,String>>()

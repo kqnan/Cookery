@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
+import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.adaptLocation
 import taboolib.common.util.asList
@@ -26,6 +27,7 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.ItemBuilder
+import taboolib.platform.util.isAir
 import taboolib.platform.util.isNotAir
 import taboolib.platform.util.isRightClickBlock
 import java.util.Collections
@@ -39,10 +41,14 @@ object CookPot {
     fun disable(){
         baffle.resetAll()
     }
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun addFuel(e:PlayerInteractEvent){
         if(!Cookery.allowAddFuel(e.clickedBlock.location,e.player))return
-        if(baffle.hasNext()) baffle.next()
+        if(baffle.hasNext(e.player.uniqueId.toString())){
+            baffle.next(e.player.uniqueId.toString())
+        }
+        else return
+
         if(e.isRightClickBlock()&&e.clickedBlock.type==Material.CAULDRON
             &&e.player.inventory.itemInMainHand.type.isPotFuel()
         ){
@@ -54,10 +60,11 @@ object CookPot {
             e.player.sendMessage("${Messages.prefix}${Messages.fuel_added}".colored())
         }
     }
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun openPot(e:PlayerInteractEvent){
+
         if(!Cookery.allowOpen(e.clickedBlock.location,e.player))return
-        if(e.isRightClickBlock()&&!e.player.inventory.itemInMainHand.type.isPotFuel()){
+        if(e.isRightClickBlock()&&(!e.player.inventory.itemInMainHand.type.isPotFuel()||e.player.inventory.itemInMainHand.isAir())){
             if(e.clickedBlock.type== Material.CAULDRON){
                 if(!currentPots.containsKey(e.clickedBlock.location)|| currentPots.get(e.clickedBlock.location)!!.state==Pot.State.WAITING){
                     e.player.openMenu<Basic>(title = "&a烹饪模式".colored()){
@@ -92,45 +99,13 @@ object CookPot {
                                         break
                                     }
                                 }
-                                //如果一个配方都没匹配到，就退出
-                                recipe?:return@set
-                                //如果匹配到配方，按照配方来把地上的物品移除
-                                    //把剩余的物品分类
-                                val remainitems=items.map { it.itemStack }.filter { it.isNotAir() }.groupBy { it.itemMeta.hashCode() }
-                                    //把每一类压缩成单个物品,压缩到[0]位置的物品中
-                                for (remainitem in remainitems) {
-                                    var cnt=0
-                                    remainitem.value.forEach { cnt+=it.amount }
-                                    remainitem.value[0].amount=cnt
-                                }
-                                val rcpitems=recipe.gradients.groupBy { it.itemMeta.hashCode() }
-                                    //对于配方中每一类的物品
-                                for (rcpitem in rcpitems) {
-                                    //计算这一类物品的总数量
-                                    var cnt=0
-                                    rcpitem.value.forEach { cnt+=it.amount }
-                                    //从remainitems中找到这一类的物品，并减去数量
-                                    for (remainitem in remainitems) {
-                                        if(remainitem.value[0].isGradient(rcpitem.value[0])){
-                                            if(remainitem.value[0].amount<=cnt){
-                                                remainitem.value[0].type=Material.AIR
-                                            }
-                                            else {
-                                                remainitem.value[0].amount-=cnt
-                                            }
-                                        }
-                                    }
-                                }
-                                //移除全部物品
-                                items.forEach { it.remove() }
-                                //把剩余物品重新生成出来
-                                for (remainitem in remainitems) {
-                                    if(remainitem.value[0].isNotAir()){
-                                        loc.world.dropItem(loc,remainitem.value[0])
-                                    }
-                                }
-                                pot.gradient=recipe.gradients
+
+
+                                items.forEach { if(Recipes.isGradient(it.itemStack))it.remove() }
+
+                                pot.gradient=recipe?.gradients
                                 pot.mode=mode.first
+                                pot.modeDisplay=mode.second
                                 pot.cook(this.clicker,recipe)
                             }
                         }
@@ -147,7 +122,11 @@ object CookPot {
     fun matchRecipe(cook_type:String,gradient:List<ItemStack>,recipe:Recipes.Recipe):Boolean{
             if(recipe.require_type!=cook_type)return  false
             val cfg_group=recipe.gradients.groupBy {it.itemMeta.hashCode()}
-            var pot_group=gradient.groupBy { it.itemMeta.hashCode() }
+            //把所有能识别的物品过滤出来再分类
+            val pot_group=gradient.filter { its->Recipes.getGradientsItem().map { it.itemMeta }.contains(its.itemMeta)}.groupBy { it.itemMeta.hashCode() }
+            //判断食谱中物品的类别数和锅中物品的类别数是否相等
+            if(cfg_group.size!=pot_group.size)return false
+
             for (entry in cfg_group) {
                 //判断这个物品是否在锅中
                 var res=false
@@ -160,14 +139,15 @@ object CookPot {
                     }
                 }
                 if(!res)return false
-                //判断锅中物品数量是否足够
+                //判断锅中物品数量是否相等
                 en!!
                 var need=0
                 entry.value.forEach { need+=it.amount }
                 var pot_has=0
                 en.value.forEach { pot_has+=it.amount }
-                if(pot_has<need)return  false
+                if(pot_has!=need)return  false
             }
+
             return  true
     }
    private fun isRecipeItem(item:ItemStack):Boolean{
