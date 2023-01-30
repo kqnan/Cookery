@@ -1,5 +1,8 @@
-# Cookery烹饪
-[中文](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [English](README_EN.md)
+Languages: [中文](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [English](README_EN.md)
+# Cookery
+
+![](https://img.shields.io/badge/Framework-TabooLib-brightgreen)
+
 
 A plugin make players have fun cooking.A player places a cauldron and drop specific items into the
 cauldron.Next ,he requires to right-click the cauldron and choose a cooking mode.After a moment,
