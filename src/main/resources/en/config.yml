@@ -1,0 +1,26 @@
+debug: false
+fuel:
+  - 'coal:1'
+  - 'feather:0.1'
+mode:
+  keys: ["Boil","quick_fry","deep_fly","steam","barbecue"]
+  display: ["&aBoil","&cquick_fry","&6deep_fry","&7steam","&5barbecue"]
+unknown:
+  name: '&fUnknown substance'
+  material: clay_ball
+  lore:
+    - '&7Objects formed by adverse chemical reactions between food materials'
+  debuff:
+    - "BLINDNESS:2:130:60"   #PotionType，level，time，chance
+
+upgrade_require_exp: [20,30,40,50,60,70,80,90]
+upgrade_success_chance: [20,30,40,50,60,70,80,90]
+level_unlock:
+  - "1:yztd"
+  - "2:fqcd"
+menu:
+  unlock:
+    name: '&f???'
+    material: 'paper'
+    lore:
+      - '&fYou have never cooked this dish'

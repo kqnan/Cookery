@@ -67,7 +67,7 @@ object CookPot {
         if(e.isRightClickBlock()&&(!e.player.inventory.itemInMainHand.type.isPotFuel()||e.player.inventory.itemInMainHand.isAir())){
             if(e.clickedBlock.type== Material.CAULDRON){
                 if(!currentPots.containsKey(e.clickedBlock.location)|| currentPots.get(e.clickedBlock.location)!!.state==Pot.State.WAITING){
-                    e.player.openMenu<Basic>(title = "&a烹饪模式".colored()){
+                    e.player.openMenu<Basic>(title = Messages.cooking_mode.colored()){
                         var loc=e.clickedBlock.location.clone()
                         rows(2)
                         var idx=2
@@ -79,7 +79,7 @@ object CookPot {
                         }else {
                             currentPots.put(loc,pot)
                         }
-                        set(13,ItemBuilder(Material.COAL).also { it.name="&a燃料值：&f${pot.getFuel()}".colored() }.build()){isCancelled=true}
+                        set(13,ItemBuilder(Material.COAL).also { it.name="${Messages.fuel}：&f${pot.getFuel()}".colored() }.build()){isCancelled=true}
                         for (mode in Configs.getModes()) {
                             set(idx++,ItemBuilder(Material.WOOL).also { it.name=mode.second.colored() }.build()){
                                 this.clicker.closeInventory()

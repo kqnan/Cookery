@@ -73,7 +73,8 @@ data class Pot(val loc: Location){
                 }
                 remain--
                 loc.world.spawnParticle(Particle.SMOKE_LARGE,loc.clone().add(0.5,2.0,0.5),2,0.0,0.0,0.0,0.0)
-                sync { Cookery.holoDisplay.addholo(loc.clone().add(0.5,2.0,0.5), listOf("${modeDisplay}","&a正在烹饪中","&a剩余时间:${remain}秒","&7成功率：${chance}")) }
+                sync { Cookery.holoDisplay.addholo(loc.clone().add(0.5,2.0,0.5), listOf("${modeDisplay}",
+                    Messages.cooking_hd,"${Messages.remain_time_hd}:${remain}${Messages.seconds}","${Messages.success_chance}：${chance}%")) }
             }
 
     }

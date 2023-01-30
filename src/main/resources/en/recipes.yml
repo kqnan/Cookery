@@ -1,48 +1,49 @@
 yztd:
   gradients:
     zftd:
-      name: "&f做饭土豆"
+      name: "&fYummy potato"
       material: potato
       lore:
-        - "普通的土豆"
+        - "&fa normal potato"
   time: 30
   chance: 60
   require_level: 1
-  require_type: "水煮"
+  require_type: "deep_fry"
   rewards:
     exp: 1
     item:
-      name: '&f油炸土豆条'
+      name: '&fFried potato'
       material: bread
       lore:
-        - "&7土豆做成的条，油炸后真香啊"
+        - "&7It's made of potatoes. "
+        - "&7It tastes delicious after frying"
       buff_trigger_all: true
       buff:
-        - "HEALTH_BOOST:2:130:60"   #药水名，等级，时间，概率
+        - "HEALTH_BOOST:2:130:60"
 
 fqcd:
   gradients:
     zftd:
-      name: "&f鸡蛋"
+      name: "&fEgg"
       material: egg
       lore:
-        - "普通的鸡蛋"
+        - "&7a normal egg"
     fq:
-      name: "&f番茄"
+      name: "&ftomato"
       material: apple
       lore:
-        - "普通的番茄"
+        - "&7a normal tomato"
   time: 30
   chance: 60
   require_level: 2
-  require_type: "爆炒"
+  require_type: "quick_fry"
   rewards:
     exp: 1
     item:
-      name: '&f番茄炒蛋'
+      name: '&fFried eggs with tomatoes'
       material: bread
       lore:
         - "&7"
       buff_trigger_all: true
       buff:
-        - "HEALTH_BOOST:2:130:60"   #药水名，等级，时间，概率
+        - "HEALTH_BOOST:2:130:60"
