@@ -1,11 +1,11 @@
-# CookeryÅëâ¿
+# Cookeryçƒ¹é¥ª
 A plugin make players have fun cooking.A player places a cauldron and drop specific items into the 
 cauldron.Next ,he requires to right-click the cauldron and choose a cooking mode.After a moment,
 food spouted from the cauldron(pot)
 
 ### Step1 Add gradients to pot
 
-![Add gradients to pot](imges/drop%20items.jpg )
+![](imges/drop%20items.jpg )
 
 ### Step2 Choose cooking mode
 
