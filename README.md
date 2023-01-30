@@ -1,29 +1,35 @@
 # Cookery烹饪
-A plugin make players have fun cooking.A player places a cauldron and drop specific items into the 
-cauldron.Next ,he requires to right-click the cauldron and choose a cooking mode.After a moment,
-food spouted from the cauldron(pot)
+[中文](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [English](README_EN.md)
 
-### Step1 Add gradients to pot
+一个插件可以让玩家享受烹饪的乐趣。玩家放置一个大锅，并将特定的物品放入锅。接下来，他需要右键单击锅并选择烹饪模式。片刻后，
+从大锅中喷出的食物
+
+### 第一步 把原料添加到锅中
 
 ![](imges/drop%20items.jpg )
 
-### Step2 Choose cooking mode
+### 第二步 选择烹饪模式
 
 ![](imges/choose%20mode.jpg)
 
-### Step3 Wait a moment
+### 第三步 稍等片刻
 
 ![](imges/waiting.jpg)
 
-### Step4 Get food
+### 第四步 获得食物
 
 ![](imges/result.jpg)
 
 # Features
- * Support custom recipe
- * Player can gain exp and level-up after successful cooking
- * Unlocked new recipes and improve success rate after level-up
- * In-game gui show all recipe
- * Obtain configurable potion effects after eating food
- * All messages configurable
- * Use Sqlite or mysql to storage players' data
+ * 支持自定义食谱
+ * 成功烹饪后，玩家可以获得经验并提升等级
+
+ * 升级后解锁新配方并提高烹饪成功率
+
+ * 游戏中gui显示所有配方
+
+ * 食用食物后获得可配置的药水效果
+
+ * 所有消息均可配置
+
+ * 使用Sqlite或mysql存储玩家的数据
