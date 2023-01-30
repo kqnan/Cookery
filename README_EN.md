@@ -17,7 +17,7 @@ food spouted from the cauldron(pot)
 * All messages configurable
 * Use Sqlite or mysql to storage players' data
 
-#Example
+# Example
 
 #### Step1 Add gradients to pot
 
