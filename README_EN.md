@@ -1,4 +1,4 @@
-Languages: [ÖÐÎÄ](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [English](README_EN.md)
+Languages: [ä¸­æ–‡](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [English](README_EN.md)
 # Cookery
 
 ![](https://img.shields.io/badge/Framework-TabooLib-brightgreen)  &nbsp; [![Codacy Badge](https://app.codacy.com/project/badge/Grade/bd00095d26224589a22ec1306ce20890)](https://www.codacy.com/gh/kqnan/Cookery/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kqnan/Cookery&amp;utm_campaign=Badge_Grade)&nbsp; ![](https://img.shields.io/github/languages/code-size/kqnan/Cookery)
