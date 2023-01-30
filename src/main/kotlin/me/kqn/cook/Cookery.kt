@@ -35,9 +35,7 @@ import taboolib.platform.util.giveItem
 object Cookery : Plugin(),Protection {
     lateinit var holoDisplay:HoloGramDsiplay
     private var protections=ArrayList<Protection>()
-    override fun onLoad() {
 
-    }
     override fun onEnable() {
         Recipes.read()
         setupPlayerDatabase(newFile(getDataFolder(), "data.db"))
