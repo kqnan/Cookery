@@ -1,57 +1,29 @@
 # Cookery烹饪
+A plugin make players have fun cooking.A player places a cauldron and drop specific items into the 
+cauldron.Next ,he requires to right-click the cauldron and choose a cooking mode.After a moment,
+food spouted from the cauldron(pot)
 
+### Step1 Add gradients to pot
 
-* √ 使用对应的食材制作对应的物品 例如 土豆（需要lore检测）+土豆（需要lore检测）+辣椒粉（需要lore检测）= 麻辣薯条 （需要lore检测） 
+![Add gradients to pot](imges/drop%20items.jpg )
 
-* √ 可以选择燃料对锅具进行填充 例如 配置里面 羽毛可燃度=0.1 煤炭可燃度=1 每次开始制作消耗一个可燃度 否则提示例如 你需要至少1点可燃度进行烹饪 
+### Step2 Choose cooking mode
 
-* √ 烹饪的方法为 玩家可以右键炼药锅来切换形态 
-* √ 玩家只可以更改自己领地内（res）的炼药锅（右键）切换不同的形态（可以使用wg确定玩家可以做饭的范围 例如 zzzz zzy 那就是在zzzz 和 zzy中的炼药锅才要用 如果不在会提示此处无法进行烹饪哦！）   
+![](imges/choose%20mode.jpg)
 
-* √ 水煮 爆炒 油炸 蒸笼 烧烤（暂定5种）对于食物的烹饪方式也不同 例如土豆水煮-水煮土豆 油炸-炸薯条 爆炒-土豆丝 蒸笼-土豆泥 玩家丢入锅中的物品 只要能识别 例如玩家丢了子弹进去=无法识别物品不会消失 玩家丢了土豆（lore检测版的）=可以识别=物品消失 锅转换为做饭模式
- 
-* √ 做饭模式中无法切换这口锅状态 例如油炸土豆中 玩家右键锅提示=正在做饭哦 请稍等来切换烹饪模式 
-* √ 具体的模式在锅上面会有个hd来显示 例如 水煮模式 当扔进去物品后发出极少量烟尘粒子效果 
-* √ 然后锅上面的HD转为 剩余时30秒 剩余时间 29秒 ....这样
+### Step3 Wait a moment
 
-* √ 后端配置内可以写具体的菜品 例如
-  配方1
-  需要物品名称 做饭土豆
-  需要物品的id 土豆的游戏编号
-  需要物品lore xxxx的土豆 用于烹饪使用
-  需要使用的方法 油炸
-  做饭所需时间 例如 30秒
-  做饭成功率 例如 60%
-  最终计时结束后获得的成品 油炸土豆条
-  成品的id 油炸土豆条的游戏编号
-  成品lore xxxx土豆做成的条 油炸后真香啊
-  吃下这个油炸土豆条会获得的buff 例如 生命值回复1 30秒
+![](imges/waiting.jpg)
 
-* √ 如果玩家放入了无法识别的物品 例如 土豆+土豆+土豆 菜单上没有这道菜 或者例如 面条-油炸=菜品上没有次菜=变成 不明物体
-  就会变成一道 菜品 不明物体 吃下后获得debuff （需要配置）
+### Step4 Get food
 
-* √ 同样的需要经验值和等级来做一定的菜 例如
-   炸土豆 需求等级1 做完后给与的经验值1
-   糖醋鲤鱼 需求等级 5 做完后给与的经验值吧 5
-* √ 同样的升级经验也不相同 例如1级-2级10经验
-  2级-3级 30经验这样 当厨艺碾压等级后 额外增加的成功率 例如10%
-  例如我2级做1级的土豆条 土豆条本身概率 60% 2-1=1 最后的概率应该是60%本身+10%=70%成功率
-* √ 给做饭加个功能 例如吃下后触发的buff是按照几率的 例如 可否同时触发所有 true/false ture=都可以触发 false=触发一个就不会触发另一个 然后不同的buff有不同的几率 例如速度的概率是20% 力量的几率40% 反胃的几率50% 这样的 然后包括和那个称号系统一样的 升级后可以触发指令 例如0-1 会执行给与菜谱的命令
+![](imges/result.jpg)
 
-* √ 做成图鉴那种形式吗 例如 /菜品菜单 玩家就可以看到解锁过的食物 配方 和成功率 做成功的就能看到配方 没做过的就是??? 感觉这样也挺不错
-
-* √ 食谱可以配置 例如什么菜单是基础就解锁的 例如 lv1 自动解锁 水煮土豆 炸薯条 这种的 lv2 自动解锁 辣味薯条 牛排饭这种 后端可以有个配置 例如 inhide：ture/false ture就是等级到了自动解锁在菜单里面
-
-**Windows:**
-
-```
-gradlew.bat clean build
-```
-
-**macOS/Linux:**
-
-```
-./gradlew clean build
-```
-
-Build artifacts should be found in `./build/libs` folder.
+# Features
+ * Support custom recipe
+ * Player can gain exp and level-up after successful cooking
+ * Unlocked new recipes and improve success rate after level-up
+ * In-game gui show all recipe
+ * Obtain configurable potion effects after eating food
+ * All messages configurable
+ * Use Sqlite or mysql to storage players' data
