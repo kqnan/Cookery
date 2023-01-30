@@ -1,0 +1,49 @@
+yztd:
+  gradients:
+    zftd:
+      name: "&fYummy potato"
+      material: potato
+      lore:
+        - "&fa normal potato"
+  time: 30
+  chance: 60
+  require_level: 1
+  require_type: "deep_fry"
+  rewards:
+    exp: 1
+    item:
+      name: '&fFried potato'
+      material: bread
+      lore:
+        - "&7It's made of potatoes. "
+        - "&7It tastes delicious after frying"
+      buff_trigger_all: true
+      buff:
+        - "HEALTH_BOOST:2:130:60"
+
+fqcd:
+  gradients:
+    zftd:
+      name: "&fEgg"
+      material: egg
+      lore:
+        - "&7a normal egg"
+    fq:
+      name: "&ftomato"
+      material: apple
+      lore:
+        - "&7a normal tomato"
+  time: 30
+  chance: 60
+  require_level: 2
+  require_type: "quick_fry"
+  rewards:
+    exp: 1
+    item:
+      name: '&fFried eggs with tomatoes'
+      material: bread
+      lore:
+        - "&7"
+      buff_trigger_all: true
+      buff:
+        - "HEALTH_BOOST:2:130:60"
