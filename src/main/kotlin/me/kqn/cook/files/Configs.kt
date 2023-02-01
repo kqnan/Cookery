@@ -39,7 +39,8 @@ object Configs {
         }
         unlockList.clear()
         unlockList.addAll(config.getStringList("level_unlock"))
-        unknowItemStack=RewardItem.getRewardItem(config.getItemStack("unknown")?:return, config.getStringList("unknown.debuff"),true)
+        unknowItemStack=RewardItem.getRewardItem(config.getItemStack("unknown")?:return, config.getStringList("unknown.debuff"),true,
+            config.getString("unknown.action","")!!)
     }
     fun  save(){
         submitAsync {

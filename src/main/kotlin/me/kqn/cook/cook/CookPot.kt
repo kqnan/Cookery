@@ -10,6 +10,7 @@ import me.kqn.cook.isGradient
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
@@ -41,6 +42,17 @@ object CookPot {
     fun disable(){
         baffle.resetAll()
     }
+//    @SubscribeEvent
+//    fun breakpot(e:BlockBreakEvent){
+//        if(!e.isCancelled&&e.block.type==Material.CAULDRON){
+//            if(currentPots.get(e.block.location)?.state==Pot.State.WAITING){
+//                currentPots.remove(e.block.location)
+//            }
+//            else if(currentPots.get(e.block.location)?.state==Pot.State.COOKING){
+//                e.isCancelled=true
+//            }
+//        }
+//    }
     @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun addFuel(e:PlayerInteractEvent){
         if(!Cookery.allowAddFuel(e.clickedBlock.location,e.player))return
@@ -100,9 +112,13 @@ object CookPot {
                                     }
                                 }
 
+                                var hasingradient=false
+                                items.forEach { if(Recipes.isGradient(it.itemStack)) {
+                                    hasingradient=true
+                                    it.remove()
+                                } }
 
-                                items.forEach { if(Recipes.isGradient(it.itemStack))it.remove() }
-
+                                if(!hasingradient)return@set
                                 pot.gradient=recipe?.gradients
                                 pot.mode=mode.first
                                 pot.modeDisplay=mode.second

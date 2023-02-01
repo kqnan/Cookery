@@ -14,7 +14,8 @@ import java.io.File
 
 object Recipes {
     private val path="plugins/Cookery/recipes.yml"
-    private  var recipes :Configuration=Configuration.loadFromFile(File(path))
+    @Config(value="recipes.yml", autoReload = true)
+    lateinit var recipes :Configuration
     val rcp=ArrayList<Recipe>()
     private val rci=ArrayList<ItemStack>()
     init {
@@ -55,6 +56,7 @@ object Recipes {
         }
     }
     class  Recipe{
+        var reward_action:String=""
         var key:String=""
         val gradients=ArrayList<ItemStack>()
         var time:Int =30
@@ -73,6 +75,7 @@ object Recipes {
                 cfg.getConfigurationSection("gradients")?.getKeys(false)?.forEach {
                     cfg.getItemStack("gradients.${it}")?.let { it1 -> recipe.gradients.add(it1) }
                 }?:return null
+
                 recipe.time= cfg.getInt("time")
                 recipe.chance=cfg.getInt("chance")
                 recipe.require_level=cfg.getInt("require_level")
@@ -81,6 +84,7 @@ object Recipes {
                 recipe.reward_item=cfg.getItemStack("rewards.item")
                 recipe.reward_buff_trigg_all=cfg.getBoolean("rewards.item.buff_trigger_all")
                 recipe.reward_buff=cfg.getStringList("rewards.item.buff")
+                recipe.reward_action=cfg.getString("rewards.item.action","")!!
                 return recipe
             }
         }

@@ -19,7 +19,7 @@ yztd:
       buff_trigger_all: true
       buff:
         - "HEALTH_BOOST:2:130:60"   #药水名，等级，时间，概率
-
+      action: "player saturation add 1"
 fqcd:
   gradients:
     zftd:
@@ -46,3 +46,4 @@ fqcd:
       buff_trigger_all: true
       buff:
         - "HEALTH_BOOST:2:130:60"   #药水名，等级，时间，概率
+      action: "player saturation add 1"

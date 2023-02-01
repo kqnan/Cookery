@@ -15,8 +15,10 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.plugin.java.JavaPlugin
 import taboolib.common.io.newFile
 import taboolib.common.platform.Plugin
+
 import taboolib.common.platform.command.CommandContext
 import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.command
@@ -39,7 +41,8 @@ object Cookery : Plugin(),Protection {
     override fun onEnable() {
         Recipes.read()
         setupPlayerDatabase(newFile(getDataFolder(), "data.db"))
-        holoDisplay= HolographDisplay(BukkitPlugin.getInstance())
+
+        holoDisplay= HolographDisplay(plugin = BukkitPlugin.getInstance())
         regcmd()
         integration()
     }

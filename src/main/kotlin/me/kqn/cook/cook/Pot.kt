@@ -103,7 +103,7 @@ data class Pot(val loc: Location){
         }
         player.getDataContainer()["level"]=newlevel
         updateUnlockRecipe()
-        var ritem=RewardItem.getRewardItem(recipe.reward_item?:return,recipe.reward_buff?:return,recipe.reward_buff_trigg_all?:return)
+        var ritem=RewardItem.getRewardItem(recipe.reward_item?:return,recipe.reward_buff?:return,recipe.reward_buff_trigg_all?:return,recipe.reward_action?:return)
         sync { loc.world.dropItemNaturally(loc.clone().add(0.0,1.0,0.0),ritem) }
     }
     private fun finish(){

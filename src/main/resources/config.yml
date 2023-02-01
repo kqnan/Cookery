@@ -12,7 +12,7 @@ unknown:
     - '由食材间发生不良化学反应所形成的物体'
   debuff:
     - "BLINDNESS:2:130:60"   #药水名，等级，时间，概率
-
+  action: "player saturation add -1"
 upgrade_require_exp: [20,30,40,50,60,70,80,90]  #达到2级需要20经验， 达到3级需要30经验，达到4级需要40经验.....
 upgrade_success_chance: [20,30,40,50,60,70,80,90] #达到2级时，制作低于2级的菜时，获得20%额外成功率。
 level_unlock:

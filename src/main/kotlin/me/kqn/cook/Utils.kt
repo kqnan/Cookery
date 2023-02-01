@@ -2,13 +2,24 @@ package me.kqn.cook
 
 import me.kqn.cook.files.Configs
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.info
 import taboolib.module.chat.colored
+import taboolib.module.kether.KetherShell
+import taboolib.module.kether.printKetherErrorMessage
 import taboolib.platform.util.isAir
 import taboolib.platform.util.onlinePlayers
 
+fun String.eval(player: Player) {
+    try {
 
+        KetherShell.eval(this, sender = adaptPlayer(player))
+    } catch (e: Throwable) {
+        e.printKetherErrorMessage()
+    }
+}
 fun debug(str:String){
     if(Configs.config.getBoolean("debug")){
         info(str)
